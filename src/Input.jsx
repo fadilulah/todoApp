@@ -3,9 +3,8 @@ import React, { useState } from "react";
 function Input() {
   const [userInput, setUserInput] = useState("");
   const [todoList, setTodoList] = useState([]);
-  const [editingIndex, setEditingIndex] = useState(null);
+  const [showButton, setShowButton] = useState(true);
   const [updateInput, setUpdateInput] = useState("");
-
   const handelInput = (e) => {
     setUserInput(e.target.value);
   };
@@ -25,18 +24,13 @@ function Input() {
   const handelClear = () => {
     setTodoList([]);
   };
-  const toggleEdit = (index) => {
-    setEditingIndex(index);
-    setUpdateInput(todoList[index]);
+  const toggleShow = () => {
+    setShowButton(false);
   };
-
-  const handleUpdate = (index) => {
-    if (!updateInput.trim()) return;
-    const updatedList = [...todoList];
-    updatedList[index] = updateInput;
-    setTodoList(updatedList);
-    setEditingIndex(null);
-    setUpdateInput("");
+  const toggleUnshow = (index) => {
+    if (!updateInput) return;
+    todoList[index] = updateInput;
+    setShowButton(true);
   };
   return (
     <>
@@ -71,7 +65,9 @@ function Input() {
                     />{" "}
                     <button
                       className="h-[2rem] w-[7rem] border border-amber-500 rounded-md "
-                      onClick={() => handleUpdate(index)}
+                      onClick={() => {
+                        toggleUnshow(index);
+                      }}
                     >
                       Update
                     </button>
