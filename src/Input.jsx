@@ -3,8 +3,9 @@ import React, { useState } from "react";
 function Input() {
   const [userInput, setUserInput] = useState("");
   const [todoList, setTodoList] = useState([]);
-  const [showButton, setShowButton] = useState(true);
+  const [editingIndex, setEditingIndex] = useState(null);
   const [updateInput, setUpdateInput] = useState("");
+
   const handelInput = (e) => {
     setUserInput(e.target.value);
   };
@@ -24,13 +25,17 @@ function Input() {
   const handelClear = () => {
     setTodoList([]);
   };
-  const toggleShow = () => {
-    setShowButton(false);
+  const toggleShow = (index) => {
+    setEditingIndex(index);
+    setUpdateInput(todoList[index]);
   };
   const toggleUnshow = (index) => {
     if (!updateInput) return;
-    todoList[index] = updateInput;
-    setShowButton(true);
+    const updatedList = [...todoList];
+    updatedList[index] = updateInput;
+    setTodoList(updatedList);
+    setEditingIndex(null);
+    setUpdateInput("");
   };
   return (
     <>
@@ -54,7 +59,7 @@ function Input() {
           {todoList.map((item, index) => {
             return (
               <div className="flex gap-[3rem]">
-                {showButton ? (
+                {editingIndex !== index ? (
                   <li key={index}>{item}</li>
                 ) : (
                   <>
@@ -81,7 +86,9 @@ function Input() {
                 </button>
                 <button
                   className="h-[2rem] w-[7rem] border border-rose-500 rounded-md"
-                  onClick={toggleShow}
+                  onClick={() => {
+                    toggleShow(index);
+                  }}
                 >
                   Edit
                 </button>
@@ -90,7 +97,12 @@ function Input() {
           })}
         </ul>
         {todoList.length > 0 ? (
-          <button onClick={handelClear}>clear</button>
+          <button
+            className="h-[3rem] text-[1.5rem] w-[8rem] border bg-rose-500 rounded-lg"
+            onClick={handelClear}
+          >
+            CLEAR
+          </button>
         ) : null}
       </div>
     </>
